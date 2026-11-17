@@ -51,7 +51,7 @@ export default function PlushPortrait({
   };
 
   return (
-    <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+    <div className="justify-center w-full p-20" style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
       <div
         ref={rootRef}
         className="plush hero-portrait"

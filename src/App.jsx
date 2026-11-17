@@ -2,6 +2,7 @@
 import './App.css'
 import './plush/face.css'
 import PlushPortrait from './components/PlushPortrait'
+import IndieApp from './components/indiemaker/IndieApp'
 
 function App() {
 
@@ -9,6 +10,7 @@ function App() {
   return (
     <>
     <PlushPortrait/>
+    <IndieApp/>
     </>
   )
 }
