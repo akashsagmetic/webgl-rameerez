@@ -1,5 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
-body{
-    background-color: black;
+@font-face {
+  font-family: 'OPTIGaucho';
+  src:
+    url('/fonts/OPTIGaucho/OPTIGaucho.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-gaucho: 'OPTIGaucho', 'Arial Narrow', sans-serif;
+  --font-montserrat: 'Montserrat', sans-serif;
+}
+
+@keyframes sagmeticMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.sagmetic-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: sagmeticMarquee 28s linear infinite;
+  will-change: transform;
+}
+
+.sagmetic-marquee-wrap:hover .sagmetic-marquee-track {
+  animation-play-state: paused;
 }
