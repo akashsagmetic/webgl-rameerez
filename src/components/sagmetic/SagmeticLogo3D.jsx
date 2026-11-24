@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
@@ -15,7 +15,7 @@ function createBrushedMetalTexture() {
   for (let i = 0; i < 1800; i++) {
     const y = Math.random() * canvas.height;
     const x = Math.random() * canvas.width;
-    const len = 40 + Math.random() * 140;
+    const len = 45 + Math.random() * 140;
     const shade = 38 + Math.floor(Math.random() * 52);
     ctx.strokeStyle = `rgba(${shade}, ${shade}, ${shade}, 0.22)`;
     ctx.lineWidth = 0.7 + Math.random() * 1.1;
@@ -29,7 +29,8 @@ function createBrushedMetalTexture() {
   tex.colorSpace = THREE.NoColorSpace;
   tex.wrapS = THREE.RepeatWrapping;
   tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(0.03, 0.03);
+  tex.repeat.set(0.02, 0.02);
+  tex.anisotropy = 4;
   tex.needsUpdate = true;
   return tex;
 }
@@ -46,20 +47,20 @@ function createFrostedGlassTexture() {
   const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const data = imgData.data;
   for (let i = 0; i < data.length; i += 4) {
-    const grain = (Math.random() - 0.5) * 32;
-    const val = Math.max(36, Math.min(125, 76 + grain));
+    const grain = (Math.random() - 0.5) * 28;
+    const val = Math.max(38, Math.min(122, 76 + grain));
     data[i] = val;
     data[i + 1] = val;
     data[i + 2] = val;
   }
   ctx.putImageData(imgData, 0, 0);
 
-  for (let i = 0; i < 160; i++) {
+  for (let i = 0; i < 140; i++) {
     const x = Math.random() * canvas.width;
     const y = Math.random() * canvas.height;
-    const r = 20 + Math.random() * 60;
+    const r = 16 + Math.random() * 50;
     const grad = ctx.createRadialGradient(x, y, 2, x, y, r);
-    grad.addColorStop(0, 'rgba(145, 145, 145, 0.16)');
+    grad.addColorStop(0, 'rgba(145, 145, 145, 0.14)');
     grad.addColorStop(1, 'rgba(76, 76, 76, 0)');
     ctx.fillStyle = grad;
     ctx.beginPath();
@@ -71,7 +72,8 @@ function createFrostedGlassTexture() {
   tex.colorSpace = THREE.NoColorSpace;
   tex.wrapS = THREE.RepeatWrapping;
   tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(0.025, 0.025);
+  tex.repeat.set(0.02, 0.02);
+  tex.anisotropy = 4;
   tex.needsUpdate = true;
   return tex;
 }
@@ -82,30 +84,52 @@ const SAGMETIC_LOGO_SVG = `
 </svg>
 `;
 
-const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
+const SagmeticLogo3D = ({
+  className = 'w-full h-full',
+  loadingReflectionBoost = 0,
+}) => {
   const containerRef = useRef(null);
+  const boostRef = useRef(loadingReflectionBoost);
+  boostRef.current = loadingReflectionBoost;
+  const [webglUnavailable, setWebglUnavailable] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const getSize = () => ({
-      w: container.clientWidth || 380,
-      h: container.clientHeight || 380,
+      w: container.clientWidth || 520,
+      h: container.clientHeight || 520,
     });
+
+    const getDpr = () => Math.min(window.devicePixelRatio || 1, 1.75);
 
     const { w: initW, h: initH } = getSize();
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, initW / initH, 0.1, 100);
     camera.position.set(0, 0, 4.1);
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: 'high-performance',
-    });
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        powerPreference: 'default',
+        failIfMajorPerformanceCaveat: false,
+      });
+    } catch {
+      setWebglUnavailable(true);
+      return;
+    }
+
+    if (!renderer.getContext()) {
+      renderer.dispose();
+      setWebglUnavailable(true);
+      return;
+    }
+
     renderer.setSize(initW, initH);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(getDpr());
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.06;
@@ -113,8 +137,15 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
     renderer.domElement.style.height = '100%';
     container.appendChild(renderer.domElement);
 
+    const onContextLost = (e) => {
+      e.preventDefault();
+      setWebglUnavailable(true);
+    };
+    renderer.domElement.addEventListener('webglcontextlost', onContextLost, false);
+
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
-    const envTarget = pmremGenerator.fromScene(new RoomEnvironment(), 0.04);
+    const roomEnv = new RoomEnvironment();
+    const envTarget = pmremGenerator.fromScene(roomEnv, 0.04);
     scene.environment = envTarget.texture;
     scene.environmentIntensity = 0.78;
 
@@ -139,6 +170,7 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
       uHoverPos: { value: new THREE.Vector3(170, 110, 0) },
       uRippleAmp: { value: 0 },
       uHoverGlow: { value: 0 },
+      uLoadingBoost: { value: 0 },
     };
 
     function applyGlassAndRedRimShader(
@@ -153,12 +185,13 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
       } = {}
     ) {
       material.customProgramCacheKey = () =>
-        `sagmetic-hero-logo-${material.name}-${rippleScale}-${redRimBoost}`;
+        `sagmetic-hero-logo-opt-${material.name}-${rippleScale}-${redRimBoost}`;
       material.onBeforeCompile = (shader) => {
         shader.uniforms.uTime = shaderUniforms.uTime;
         shader.uniforms.uHoverPos = shaderUniforms.uHoverPos;
         shader.uniforms.uRippleAmp = shaderUniforms.uRippleAmp;
         shader.uniforms.uHoverGlow = shaderUniforms.uHoverGlow;
+        shader.uniforms.uLoadingBoost = shaderUniforms.uLoadingBoost;
         shader.uniforms.uRippleScale = { value: rippleScale };
         shader.uniforms.uBaseRimStrength = { value: baseRimStrength };
         shader.uniforms.uRedRimBoost = { value: redRimBoost };
@@ -218,6 +251,7 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
              uniform vec3 uHoverPos;
              uniform float uRippleAmp;
              uniform float uHoverGlow;
+             uniform float uLoadingBoost;
              uniform float uBaseRimStrength;
              uniform float uRedRimBoost;
              uniform float uSpotRadius;
@@ -237,20 +271,24 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
              float redRimMask = mix(0.45, 1.0, fresnel) * (0.45 + 0.95 * proximity) * uHoverGlow;
              float redSpotCore = pow(proximity, 1.8) * uHoverGlow;
 
+             float loadingRefl = mix(0.42, 1.15, fresnel) * uLoadingBoost;
+
              vec3 dc2e27 = vec3(0.863, 0.180, 0.153);
              vec3 brightCrimson = vec3(1.0, 0.26, 0.20);
              vec3 redReflection = mix(dc2e27, brightCrimson, clamp(fresnel * 0.65 + redSpotCore * 0.45, 0.0, 1.0))
                * (redRimMask + redSpotCore * 0.75) * uRedRimBoost;
 
-             gl_FragColor.rgb += glassRim + redReflection;
+             vec3 loadingCrimsonRefl = mix(dc2e27, brightCrimson, fresnel * 0.75) * loadingRefl * 1.15;
+
+             gl_FragColor.rgb += glassRim + redReflection + loadingCrimsonRefl;
 
              float pulse = 0.82 + 0.18 * sin(uTime * 3.1 + vLocalP.x * 0.12);
              float shimmer = pow(0.5 + 0.5 * sin((vLocalP.x + vLocalP.y) * 0.18 - uTime * 3.5), 6.0);
              vec3 bubbleCrimson = dc2e27 * (0.85 + 0.38 * pulse) + vec3(0.16, 0.02, 0.02);
-             bubbleCrimson += vec3(1.0, 0.36, 0.28) * (fresnel * 0.5 + shimmer * 0.35 + uHoverGlow * 0.45 + uRippleAmp * 0.25);
+             bubbleCrimson += vec3(1.0, 0.36, 0.28) * (fresnel * 0.5 + shimmer * 0.35 + uHoverGlow * 0.45 + uRippleAmp * 0.25 + uLoadingBoost * 0.2);
 
              gl_FragColor.rgb = mix(gl_FragColor.rgb, bubbleCrimson, vBubbleMask * 0.92);
-             gl_FragColor.a = clamp((0.38 + fresnel * 0.42 + redRimMask * 0.34 + vBubbleMask * 0.32) * uAlphaScale, 0.16, 0.94);`
+             gl_FragColor.a = clamp((0.38 + fresnel * 0.42 + redRimMask * 0.34 + loadingRefl * 0.22 + vBubbleMask * 0.32) * uAlphaScale, 0.16, 0.96);`
           );
       };
       material.needsUpdate = true;
@@ -265,7 +303,7 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
       bumpMap: metalRoughTex,
       bumpScale: 0.003,
       transparent: true,
-      opacity: 0.68,
+      opacity: 0.72,
       envMapIntensity: 0.75,
     });
     applyGlassAndRedRimShader(metalMat, {
@@ -273,37 +311,32 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
       baseRimStrength: 0.18,
       redRimBoost: 1.65,
       spotRadius: 92.0,
-      alphaScale: 0.85,
+      alphaScale: 0.88,
       bubbleFloatScale: 0.85,
     });
 
     const glassMat = new THREE.MeshPhysicalMaterial({
       name: 'LogoFrostedTransparentGlass',
-      color: 0xdbeafe,
-      transmission: 0.86,
+      color: 0xe2e8f0,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.44,
       roughness: 1.0,
       roughnessMap: frostRoughTex,
       bumpMap: frostRoughTex,
-      bumpScale: 0.005,
-      metalness: 0.0,
-      ior: 1.48,
-      thickness: 1.15,
-      attenuationColor: new THREE.Color(0x94a3b8),
-      attenuationDistance: 1.8,
-      clearcoat: 0.92,
-      clearcoatRoughness: 0.22,
-      iridescence: 0.38,
-      iridescenceIOR: 1.32,
-      envMapIntensity: 1.0,
+      bumpScale: 0.003,
+      metalness: 0.04,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.12,
+      iridescence: 0.42,
+      iridescenceIOR: 1.35,
+      envMapIntensity: 1.2,
     });
     applyGlassAndRedRimShader(glassMat, {
       rippleScale: 2.1,
-      baseRimStrength: 0.26,
+      baseRimStrength: 0.28,
       redRimBoost: 2.15,
       spotRadius: 98.0,
-      alphaScale: 1.0,
+      alphaScale: 0.95,
       bubbleFloatScale: 1.15,
     });
 
@@ -416,19 +449,61 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(getDpr());
     };
+
+    const resizeObserver = new ResizeObserver(onResize);
+    resizeObserver.observe(container);
 
     container.addEventListener('pointermove', onPointerMove);
     container.addEventListener('pointerleave', onPointerLeave);
     container.addEventListener('pointerdown', onPointerDown);
     window.addEventListener('resize', onResize);
 
-    const clock = new THREE.Clock();
+    let isInView = true;
+    let isTabVisible = !document.hidden;
     let animFrameId = null;
 
-    function animate() {
+    const clock = new THREE.Clock();
+    const shouldRender = () => isInView && isTabVisible;
+
+    const startLoop = () => {
+      if (animFrameId !== null || !shouldRender()) return;
+      clock.getDelta();
       animFrameId = requestAnimationFrame(animate);
+    };
+
+    const stopLoop = () => {
+      if (animFrameId !== null) {
+        cancelAnimationFrame(animFrameId);
+        animFrameId = null;
+      }
+    };
+
+    const onVisibilityChange = () => {
+      isTabVisible = !document.hidden;
+      if (shouldRender()) startLoop();
+      else stopLoop();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        isInView = entries.some((entry) => entry.isIntersecting);
+        if (shouldRender()) startLoop();
+        else stopLoop();
+      },
+      { threshold: 0.01 }
+    );
+    observer.observe(container);
+
+    function animate() {
+      if (!shouldRender()) {
+        animFrameId = null;
+        return;
+      }
+      animFrameId = requestAnimationFrame(animate);
+
       const dt = Math.max(0.001, Math.min(0.05, clock.getDelta()));
       const elapsed = clock.getElapsedTime();
 
@@ -438,11 +513,19 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
       impulseBurst = THREE.MathUtils.damp(impulseBurst, 0, 3.0, dt);
       hoverGlow = THREE.MathUtils.damp(hoverGlow, targetHoverGlow, 7.5, dt);
 
+      const loadBoost = boostRef.current;
+      const sweepX = Math.sin(elapsed * 2.4) * 1.65;
+      const sweepY = Math.cos(elapsed * 1.9) * 1.15;
+
       keyLight.position.x = 3.2 + smoothPointer.x * 2.2;
       keyLight.position.y = 4.2 + smoothPointer.y * 1.8;
 
-      hoverRedLight.position.set(smoothPointer.x * 1.9, smoothPointer.y * 1.6, 2.4);
-      hoverRedLight.intensity = hoverGlow * 10.5;
+      hoverRedLight.position.set(
+        loadBoost > 0.05 ? sweepX : smoothPointer.x * 1.9,
+        loadBoost > 0.05 ? sweepY : smoothPointer.y * 1.6,
+        2.5
+      );
+      hoverRedLight.intensity = Math.max(hoverGlow * 10.5, loadBoost * 12.0);
 
       const goalRotX = -smoothPointer.y * 0.42 + Math.sin(elapsed * 0.7) * 0.06;
       const goalRotY = smoothPointer.x * 0.54 + Math.sin(elapsed * 0.45) * 0.18;
@@ -465,14 +548,19 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
       shaderUniforms.uTime.value = elapsed;
       shaderUniforms.uRippleAmp.value = rippleAmp;
       shaderUniforms.uHoverGlow.value = hoverGlow;
+      shaderUniforms.uLoadingBoost.value = loadBoost;
 
       renderer.render(scene, camera);
     }
 
-    animate();
+    startLoop();
 
     return () => {
-      cancelAnimationFrame(animFrameId);
+      stopLoop();
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      resizeObserver.disconnect();
+      renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
       container.removeEventListener('pointermove', onPointerMove);
       container.removeEventListener('pointerleave', onPointerLeave);
       container.removeEventListener('pointerdown', onPointerDown);
@@ -484,6 +572,7 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
       metalRoughTex.dispose();
       frostRoughTex.dispose();
       envTarget.dispose();
+      roomEnv.dispose();
       pmremGenerator.dispose();
       renderer.dispose();
 
@@ -492,6 +581,21 @@ const SagmeticLogo3D = ({ className = 'w-full h-full' }) => {
       }
     };
   }, []);
+
+  if (webglUnavailable) {
+    return (
+      <div className={`${className} flex items-center justify-center`}>
+        <div
+          className="w-28 h-28 rounded-full flex items-center justify-center"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(222,45,38,0.35) 0%, rgba(255,255,255,0.08) 65%, transparent 100%)',
+          }}
+          dangerouslySetInnerHTML={{ __html: SAGMETIC_LOGO_SVG }}
+        />
+      </div>
+    );
+  }
 
   return <div ref={containerRef} className={className} />;
 };

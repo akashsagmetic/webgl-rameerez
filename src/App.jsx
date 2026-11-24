@@ -10,6 +10,10 @@ import { useState } from 'react'
 import Sagmetic from './components/sagmetic/Sagmetic'
 import AgencyLogoHero from './components/sagmetic/AgencyHeroSculpture'
 import SagmeticHero from './components/sagmetic/SagmeticHero'
+import AiCircuitHeroBg from './components/sagmetic/AiChipCurrentBg'
+import AboutSagmeticSection from './components/sagmetic/AboutSagmeticSection'
+import TechnologyExpertiseSection from './components/sagmetic/TechnologyExpertiseSection'
+import ExpertiseSpotlightSection from './components/sagmetic/ExpertiseSpotlightSection'
 
 
 export default function App() {
@@ -46,6 +50,11 @@ export default function App() {
     {/* <Sagmetic/> */}
     {/* <AgencyLogoHero/> */}
     <SagmeticHero/>
+    <AboutSagmeticSection/>
+    <TechnologyExpertiseSection/>
+    <ExpertiseSpotlightSection/>
+    
+    {/* <AiCircuitHeroBg/> */}
     </>
   );
 }

@@ -1,11 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @font-face {
   font-family: 'OPTIGaucho';
-  src:
-    url('/fonts/OPTIGaucho/OPTIGaucho.otf') format('opentype');
+  src: url('/fonts/OPTIGaucho/OPTIGaucho.otf') format('opentype');
   font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Futura Now Headline';
+  src: url('/fonts/futura-now-headline-cufonfonts/FuturaNowHeadlineExtraBold.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/fonts/instrument-serif-cufonfonts/instrumentserif-regular.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -13,12 +28,24 @@
 @theme {
   --font-gaucho: 'OPTIGaucho', 'Arial Narrow', sans-serif;
   --font-montserrat: 'Montserrat', sans-serif;
+  --font-futura-headline: 'Futura Now Headline', sans-serif;
+  --font-instrument-serif: 'Instrument Serif', Georgia, serif;
 }
+
+
+@theme {
+  --font-gaucho: 'OPTIGaucho', 'Arial Narrow', sans-serif;
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-futura-headline: 'Futura Now Headline', 'Futura', sans-serif;
+  --font-instrument-serif: 'Instrument Serif', Georgia, serif;
+}
+
 
 @keyframes sagmeticMarquee {
   0% {
     transform: translate3d(0, 0, 0);
   }
+
   100% {
     transform: translate3d(-50%, 0, 0);
   }
@@ -33,4 +60,20 @@
 
 .sagmetic-marquee-wrap:hover .sagmetic-marquee-track {
   animation-play-state: paused;
+}
+
+
+
+@keyframes statsMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-stats-marquee {
+  animation: statsMarquee 26s linear infinite;
 }
