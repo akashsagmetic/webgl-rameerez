@@ -128,9 +128,9 @@ export default function TechnologyExpertiseSection() {
     <section
       ref={sectionRef}
       id="technology-expertise"
-      className="relative z-10 w-full overflow-hidden bg-white text-[#000000] pt-24 pb-20 lg:pt-32 lg:pb-24"
+      className="relative z-10 w-full overflow-hidden bg-white text-[#000000] -mt-px pt-24 pb-20 lg:pt-32 lg:pb-24"
     >
-      {/* Circuit line entering from box area above */}
+      {/* Circuit line starting flush at the top seam so it touches the line above with zero displacement */}
       <svg
         aria-hidden="true"
         viewBox="0 0 1600 680"
@@ -138,18 +138,19 @@ export default function TechnologyExpertiseSection() {
         className="pointer-events-none absolute inset-0 w-full h-full z-0"
       >
         <path
-          d="M 1240 0 L 1240 90 L 1040 160 L 800 160"
+          d="M 1248 0 L 1248 90 L 1040 160 L 800 160"
           fill="none"
           stroke="rgba(220,45,38,0.12)"
           strokeWidth="1.5"
         />
         <path
           ref={incomingLineRef}
-          d="M 1240 0 L 1240 90 L 1040 160 L 800 160"
+          d="M 1248 0 L 1248   90 L 1040 160 L 800 160"
           fill="none"
           stroke="#DC2D26"
           strokeWidth="2"
           strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
 

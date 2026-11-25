@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import AiChipCurrentBg from "./AiChipCurrentBg";
 import SplitHeadline from "./SplitHeadline";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin);
+
+const TAGLINE_TEXT = "Creative × Technology × AI";
 
 const NAV_ITEMS = [
   { label: "Home", href: "#home", active: true },
@@ -28,6 +31,7 @@ const SagmeticHero = ({ onContactClick }) => {
   const [servicesOpen, setServicesOpen] = useState(false);
   const heroRef = useRef(null);
   const agencyRef = useRef(null);
+  const taglineRef = useRef(null);
 
   useEffect(() => {
     const rootEl = heroRef.current;
@@ -42,6 +46,20 @@ const SagmeticHero = ({ onContactClick }) => {
         ease: "power3.out",
         clearProps: "transform",
       });
+
+      if (taglineRef.current) {
+        gsap.to(taglineRef.current, {
+          duration: 1.7,
+          delay: 0.15,
+          ease: "power2.out",
+          scrambleText: {
+            text: TAGLINE_TEXT,
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ×/&#",
+            revealDelay: 0.25,
+            speed: 0.25,
+          },
+        });
+      }
 
       if (agencyRef.current) {
         gsap.to(agencyRef.current, {
@@ -152,15 +170,15 @@ const SagmeticHero = ({ onContactClick }) => {
           className="text-[12px] sm:text-[13px] tracking-[0.06em] text-zinc-300 mb-4"
         >
           <span
-            data-hero-stagger="true"
-            className="text-[14px] font-semibold tracking-[0.04em] bg-clip-text text-transparent mb-3"
+            ref={taglineRef}
+            className="inline-block text-[14px] font-semibold tracking-[0.04em] bg-clip-text text-transparent mb-3"
             style={{
               fontFamily: "'Montserrat', sans-serif",
               backgroundImage:
                 "linear-gradient(90deg, #DE2D26 0%, #FFFFFF 50%, #DC2D26 100%)",
             }}
           >
-            Creative × Technology × AI
+            {TAGLINE_TEXT}
           </span>
         </p>
 
@@ -198,8 +216,6 @@ const SagmeticHero = ({ onContactClick }) => {
           ))}
         </div>
       </div>
-
-     
     </section>
   );
 };

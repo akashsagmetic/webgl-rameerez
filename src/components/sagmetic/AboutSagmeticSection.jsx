@@ -66,6 +66,7 @@ export default function AboutSagmeticSection({
 }) {
   const sectionRef = useRef(null);
   const incomingTraceRef = useRef(null);
+  const sideLineRef = useRef(null);
   const eyebrowLineRef = useRef(null);
   const headingLine1Ref = useRef(null);
   const headingLine2Ref = useRef(null);
@@ -103,13 +104,18 @@ export default function AboutSagmeticSection({
         ];
         const paraLines = splitPara.lines || [];
 
-        if (incomingTraceRef.current) {
-          const traceLen = incomingTraceRef.current.getTotalLength();
-          gsap.set(incomingTraceRef.current, {
+        const tracedPaths = [
+          incomingTraceRef.current,
+          sideLineRef.current,
+        ].filter(Boolean);
+
+        tracedPaths.forEach((path) => {
+          const traceLen = path.getTotalLength();
+          gsap.set(path, {
             strokeDasharray: traceLen,
             strokeDashoffset: traceLen,
           });
-        }
+        });
 
         gsap.set(eyebrowLineRef.current, {
           scaleX: 0,
@@ -152,7 +158,7 @@ export default function AboutSagmeticSection({
           scrollTrigger: {
             trigger: root,
             start: "top 78%",
-            end: "bottom 40%",
+            end: "bottom 35%",
             scrub: 0.65,
           },
         });
@@ -243,6 +249,19 @@ export default function AboutSagmeticSection({
           0.34
         );
 
+        // Sideline touches bottom of the box and runs through the bottom spacing with zero gap
+        if (sideLineRef.current) {
+          tl.to(
+            sideLineRef.current,
+            {
+              strokeDashoffset: 0,
+              duration: 0.3,
+              ease: "none",
+            },
+            0.42
+          );
+        }
+
         return () => {
           splitH1.revert();
           splitH2.revert();
@@ -263,9 +282,9 @@ export default function AboutSagmeticSection({
     <section
       ref={sectionRef}
       id="about"
-      className="relative w-full overflow-hidden bg-white text-[#09090B] py-24 lg:py-32"
+      className="relative w-full overflow-hidden bg-white text-[#09090B] pt-24 lg:pt-32 pb-0"
     >
-      {/* Incoming line from Hero chip into About section */}
+      {/* Incoming line from previous section into About section */}
       <svg
         aria-hidden="true"
         viewBox="0 0 1600 640"
@@ -305,7 +324,7 @@ export default function AboutSagmeticSection({
           />
         </div>
 
-        {/* Main Content: Left Column + Fixed 414px Right Arch Card */}
+        {/* Main Content: Left Column + Right Arch Card */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-12 lg:gap-10">
           <div className="flex-1 min-w-0 max-w-[980px]">
             <h2 className="overflow-visible font-futura-headline font-bold text-[#050505] text-[36px] leading-[1.12] sm:text-[48px] xl:text-[60px] xl:leading-[73px] tracking-[-0.02em]">
@@ -380,6 +399,32 @@ export default function AboutSagmeticSection({
               </ul>
             </div>
           </div>
+        </div>
+
+        {/* Flush Sideline Below Box: Touches bottom of box and runs all the way through bottom spacing */}
+        <div className="w-full h-[120px] lg:h-[160px] leading-none">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 1600 160"
+            preserveAspectRatio="none"
+            className="block w-full h-full overflow-visible"
+          >
+            <path
+              d="M 1297 0 L 1297 56 L 1382 96 L 1380 160"
+              fill="none"
+              stroke="rgba(220,45,38,0.12)"
+              strokeWidth="1.5"
+            />
+            <path
+              ref={sideLineRef}
+              d="M 1297 0 L 1297 56 L 1380 96 L 1380 160"
+              fill="none"
+              stroke="#DC2D26"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
       </div>
     </section>
