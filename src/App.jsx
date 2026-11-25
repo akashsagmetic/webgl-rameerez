@@ -14,6 +14,9 @@ import AiCircuitHeroBg from './components/sagmetic/AiChipCurrentBg'
 import AboutSagmeticSection from './components/sagmetic/AboutSagmeticSection'
 import TechnologyExpertiseSection from './components/sagmetic/TechnologyExpertiseSection'
 import ExpertiseSpotlightSection from './components/sagmetic/ExpertiseSpotlightSection'
+import AiSolutionsCaseStudySection from './components/sagmetic/AiSolutionsCaseStudySection'
+import WhatWeDoSection from './components/sagmetic/WhatWeDoSection'
+import FeaturedWorkSection from './components/sagmetic/FeaturedWorkSection'
 
 
 export default function App() {
@@ -53,6 +56,9 @@ export default function App() {
     <AboutSagmeticSection/>
     <TechnologyExpertiseSection/>
     <ExpertiseSpotlightSection/>
+    <AiSolutionsCaseStudySection/>
+    <WhatWeDoSection/>
+    <FeaturedWorkSection/>
     
     {/* <AiCircuitHeroBg/> */}
     </>

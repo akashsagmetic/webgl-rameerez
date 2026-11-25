@@ -83,7 +83,7 @@ const SagmeticHero = ({ onContactClick }) => {
       <header className="relative z-30 max-w-[1360px] w-full mx-auto px-4 pt-6">
         <nav className="flex items-center justify-between rounded-full border border-white/[0.09] bg-[#0d0707]/80 px-5 py-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.65)]">
           <a href="#home" className="flex items-center gap-2.5">
-            <img src="/images/logo.png" alt="logo" />
+            <img className="md:w-auto w-50" src="/images/logo.png" alt="logo" />
           </a>
 
           <ul className="hidden md:flex items-center gap-7 text-[12px] font-medium text-zinc-400">
