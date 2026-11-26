@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import RobotMascot from "../robotmascot/RobotMascot";
 
-
 export default function FloatingMascotDock({
   footerRef,
   splashHoldMs = 1100,
@@ -45,7 +44,8 @@ export default function FloatingMascotDock({
       return;
     }
 
-    const totalMs = Math.round((splashHoldMs / 1000 + settleDuration) * 1000) + 120;
+    const totalMs =
+      Math.round((splashHoldMs / 1000 + settleDuration) * 1000) + 120;
     const fallbackTimer = window.setTimeout(() => {
       finishSplash();
     }, totalMs);
@@ -74,24 +74,24 @@ export default function FloatingMascotDock({
 
       const earlyTriggerOffset = Math.max(0.1, settleDuration - 0.3);
 
-    tl.to(
-  dockEl,
-  {
-    yPercent: 0,
-    y: 0,
-    scale: 1,
-    duration: settleDuration,
-    ease: "power3.inOut",
-  },
-  0
-).call(
-  () => {
-    window.clearTimeout(fallbackTimer);
-    finishSplash();
-  },
-  null,
-  earlyTriggerOffset
-);
+      tl.to(
+        dockEl,
+        {
+          yPercent: 0,
+          y: 0,
+          scale: 1,
+          duration: settleDuration,
+          ease: "power3.inOut",
+        },
+        0,
+      ).call(
+        () => {
+          window.clearTimeout(fallbackTimer);
+          finishSplash();
+        },
+        null,
+        earlyTriggerOffset,
+      );
 
       if (backdropEl) {
         tl.to(
@@ -101,7 +101,7 @@ export default function FloatingMascotDock({
             duration: settleDuration * 0.78,
             ease: "power2.out",
           },
-          0.25
+          0.25,
         );
       }
     });
@@ -177,7 +177,7 @@ export default function FloatingMascotDock({
       <div
         ref={dockRef}
         aria-hidden={hiddenAtFooter && !splashActive}
-        className={`hidden lg:block fixed bottom-4 sm:bottom-6 left-1/2 w-[250px] h-[220px] sm:w-[310px] sm:h-[265px] will-change-transform ${
+        className={`hidden lg:block fixed bottom-3 sm:bottom-5 left-1/2 w-[190px] h-[165px] xl:w-[240px] xl:h-[210px] 2xl:w-[310px] 2xl:h-[265px] will-change-transform ${
           splashActive ? "z-50" : "z-40"
         } ${hiddenAtFooter && !splashActive ? "pointer-events-none" : ""}`}
       >
