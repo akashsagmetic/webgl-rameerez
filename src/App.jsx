@@ -6,7 +6,7 @@ import IndieApp from './components/indiemaker/IndieApp'
 import ShibaMascot from './components/Shiba/ShibaMascot'
 import MochiMascot from './components/mochimascot/MochiMascot'
 import RobotMascot from './components/robotmascot/RobotMascot'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Sagmetic from './components/sagmetic/Sagmetic'
 import AgencyLogoHero from './components/sagmetic/AgencyHeroSculpture'
 import SagmeticHero from './components/sagmetic/SagmeticHero'
@@ -17,10 +17,17 @@ import ExpertiseSpotlightSection from './components/sagmetic/ExpertiseSpotlightS
 import AiSolutionsCaseStudySection from './components/sagmetic/AiSolutionsCaseStudySection'
 import WhatWeDoSection from './components/sagmetic/WhatWeDoSection'
 import FeaturedWorkSection from './components/sagmetic/FeaturedWorkSection'
+import AiWorkflowSection from './components/sagmetic/AiWorkflowSection'
+import StatsAndCtaSection from './components/sagmetic/StatsAndCtaSection'
+import FaqSection from './components/sagmetic/FaqSection'
+import ContactAndFooterSection from './components/sagmetic/ContactAndFooterSection'
+import FloatingMascotDock from './components/sagmetic/FloatingMascotDock'
 
 
 export default function App() {
   const [active, setActive] = useState('robot');
+  const [splashDone, setSplashDone] = useState(false);
+  const footerRef = useRef(null);
 
   return (
     // <div className="min-h-screen w-full flex flex-col bg-slate-950 text-white">
@@ -52,13 +59,19 @@ export default function App() {
     <>
     {/* <Sagmetic/> */}
     {/* <AgencyLogoHero/> */}
-    <SagmeticHero/>
+
+    <FloatingMascotDock footerRef={footerRef} onSplashComplete={() => setSplashDone(true)}  />
+    <SagmeticHero splashDone={splashDone}/>
     <AboutSagmeticSection/>
     <TechnologyExpertiseSection/>
     <ExpertiseSpotlightSection/>
     <AiSolutionsCaseStudySection/>
     <WhatWeDoSection/>
     <FeaturedWorkSection/>
+    <AiWorkflowSection/>
+    <StatsAndCtaSection/>
+    <FaqSection/>
+    <ContactAndFooterSection/>
     
     {/* <AiCircuitHeroBg/> */}
     </>

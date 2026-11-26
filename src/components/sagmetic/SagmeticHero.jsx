@@ -27,39 +27,32 @@ const STATS_ITEMS = [
   { value: "95%", label: "Client retention" },
 ];
 
-const SagmeticHero = ({ onContactClick }) => {
+const SagmeticHero = ({
+  onContactClick,
+  splashDone = true,
+  splashDelaySeconds,
+}) => {
   const [servicesOpen, setServicesOpen] = useState(false);
   const heroRef = useRef(null);
   const agencyRef = useRef(null);
   const taglineRef = useRef(null);
+
+  const resolvedDelay =
+    typeof splashDelaySeconds === "number"
+      ? splashDelaySeconds
+      : typeof window !== "undefined" && window.innerWidth >= 1024
+      ? 2.3
+      : 0;
 
   useEffect(() => {
     const rootEl = heroRef.current;
     if (!rootEl) return;
 
     const ctx = gsap.context(() => {
-      gsap.from('[data-hero-stagger="true"]', {
+      gsap.set('[data-hero-stagger="true"]', {
         y: 28,
         opacity: 0,
-        duration: 0.85,
-        stagger: 0.1,
-        ease: "power3.out",
-        clearProps: "transform",
       });
-
-      if (taglineRef.current) {
-        gsap.to(taglineRef.current, {
-          duration: 1.7,
-          delay: 0.15,
-          ease: "power2.out",
-          scrambleText: {
-            text: TAGLINE_TEXT,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ×/&#",
-            revealDelay: 0.25,
-            speed: 0.25,
-          },
-        });
-      }
 
       if (agencyRef.current) {
         gsap.to(agencyRef.current, {
@@ -77,6 +70,39 @@ const SagmeticHero = ({ onContactClick }) => {
 
     return () => ctx.revert();
   }, []);
+
+  useEffect(() => {
+    const rootEl = heroRef.current;
+    if (!rootEl || !splashDone) return;
+
+    const ctx = gsap.context(() => {
+      gsap.to('[data-hero-stagger="true"]', {
+        y: 0,
+        opacity: 1,
+        duration: 0.85,
+        stagger: 0.1,
+        delay: resolvedDelay,
+        ease: "power3.out",
+        clearProps: "transform",
+      });
+
+      if (taglineRef.current) {
+        gsap.to(taglineRef.current, {
+          duration: 1.7,
+          delay: resolvedDelay + 0.15,
+          ease: "power2.out",
+          scrambleText: {
+            text: TAGLINE_TEXT,
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ×/&#",
+            revealDelay: 0.25,
+            speed: 0.25,
+          },
+        });
+      }
+    }, rootEl);
+
+    return () => ctx.revert();
+  }, [splashDone, resolvedDelay]);
 
   return (
     <section
@@ -183,6 +209,7 @@ const SagmeticHero = ({ onContactClick }) => {
         </p>
 
         <SplitHeadline
+        splashDone={splashDone}
           agencyRef={(node) => {
             agencyRef.current = node;
           }}

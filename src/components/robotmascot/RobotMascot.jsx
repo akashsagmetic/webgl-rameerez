@@ -26,15 +26,15 @@ function createBrushedMetalTextures() {
   canvas.height = 512;
   const ctx = canvas.getContext('2d');
 
-  ctx.fillStyle = '#525252';
+  ctx.fillStyle = '#484546';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   for (let i = 0; i < 1800; i++) {
     const y = Math.random() * canvas.height;
     const x = Math.random() * canvas.width;
     const len = 35 + Math.random() * 140;
-    const shade = 55 + Math.floor(Math.random() * 65);
-    ctx.strokeStyle = `rgba(${shade}, ${shade}, ${shade}, 0.22)`;
+    const shade = 52 + Math.floor(Math.random() * 62);
+    ctx.strokeStyle = `rgba(${shade + 8}, ${shade}, ${shade}, 0.22)`;
     ctx.lineWidth = 0.7 + Math.random() * 1.1;
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -45,8 +45,8 @@ function createBrushedMetalTextures() {
   for (let i = 0; i < 900; i++) {
     const x = Math.random() * canvas.width;
     const y = Math.random() * canvas.height;
-    const v = Math.random() > 0.5 ? 165 : 35;
-    ctx.fillStyle = `rgba(${v}, ${v}, ${v}, 0.14)`;
+    const v = Math.random() > 0.5 ? 165 : 32;
+    ctx.fillStyle = `rgba(${v}, ${v * 0.92}, ${v * 0.92}, 0.14)`;
     ctx.fillRect(x, y, 2 + Math.random() * 4, 1);
   }
 
@@ -81,17 +81,17 @@ function createVisorExpressionTexture() {
   let typedChars = 0;
 
   function drawEyes({ w, h, annoyed, dizzy, poke, sleepy, phase }) {
-    const leftEye = [w * 0.33, h * 0.4];
-    const rightEye = [w * 0.67, h * 0.4];
+    const leftEye = [w * 0.30, h * 0.33];
+    const rightEye = [w * 0.70, h * 0.33];
 
     ctx.save();
     ctx.lineCap = 'round';
 
     if (dizzy > 0.05) {
-      ctx.globalAlpha = Math.min(1, dizzy * 1.2);
+      ctx.globalAlpha = Math.min(1, dizzy * 1.25);
       ctx.strokeStyle = '#ff6b6b';
-      ctx.lineWidth = 6.5;
-      const r = 15;
+      ctx.lineWidth = 9;
+      const r = 22;
       [leftEye, rightEye].forEach(([ex, ey], idx) => {
         ctx.save();
         ctx.translate(ex, ey);
@@ -107,11 +107,11 @@ function createVisorExpressionTexture() {
 
       for (let s = 0; s < 3; s++) {
         const ang = phase * 0.55 + (s * Math.PI * 2) / 3;
-        const sx = w * 0.5 + Math.cos(ang) * w * 0.19;
-        const sy = h * 0.16 + Math.sin(ang) * h * 0.06;
+        const sx = w * 0.5 + Math.cos(ang) * w * 0.17;
+        const sy = h * 0.11 + Math.sin(ang) * h * 0.04;
         ctx.save();
         ctx.fillStyle = '#ffd43b';
-        drawStarPath(ctx, sx, sy, 5, 10 * dizzy, 4.2 * dizzy);
+        drawStarPath(ctx, sx, sy, 5, 13 * dizzy, 5.5 * dizzy);
         ctx.fill();
         ctx.restore();
       }
@@ -120,11 +120,11 @@ function createVisorExpressionTexture() {
     }
 
     if (sleepy > 0.12 && annoyed <= 0.05) {
-      ctx.globalAlpha = Math.min(1, sleepy * 1.15);
+      ctx.globalAlpha = Math.min(1, sleepy * 1.2);
       ctx.strokeStyle = '#74c0fc';
-      ctx.lineWidth = 6;
-      const halfW = 16;
-      const sag = 7 * sleepy;
+      ctx.lineWidth = 8.5;
+      const halfW = 24;
+      const sag = 9 * sleepy;
       [leftEye, rightEye].forEach(([ex, ey]) => {
         ctx.beginPath();
         ctx.moveTo(ex - halfW, ey - 2);
@@ -136,8 +136,8 @@ function createVisorExpressionTexture() {
     }
 
     const squint = annoyed > 0.05 ? annoyed * 0.45 : poke > 0.05 ? poke * 0.55 : 0;
-    const eyeRx = 13;
-    const eyeRy = Math.max(4, 14 * (1 - squint));
+    const eyeRx = 22;
+    const eyeRy = Math.max(6, 24 * (1 - squint));
     const eyeColor = annoyed > 0.08 ? '#ff8787' : '#63e6be';
 
     ctx.fillStyle = eyeColor;
@@ -145,13 +145,13 @@ function createVisorExpressionTexture() {
       ctx.save();
       ctx.translate(ex, ey);
       ctx.beginPath();
-      ctx.roundRect(-eyeRx, -eyeRy, eyeRx * 2, eyeRy * 2, 6);
+      ctx.roundRect(-eyeRx, -eyeRy, eyeRx * 2, eyeRy * 2, 9);
       ctx.fill();
 
-      if (eyeRy > 7) {
-        ctx.fillStyle = '#e6fcf5';
+      if (eyeRy > 10) {
+        ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(-4, -4, 3.2, 0, Math.PI * 2);
+        ctx.arc(-7, -7, 5.2, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = eyeColor;
       }
@@ -159,18 +159,18 @@ function createVisorExpressionTexture() {
     });
 
     if (annoyed > 0.06) {
-      ctx.globalAlpha = Math.min(1, annoyed * 1.2);
+      ctx.globalAlpha = Math.min(1, annoyed * 1.25);
       ctx.strokeStyle = '#ff6b6b';
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 8;
 
       ctx.beginPath();
-      ctx.moveTo(w * 0.25, h * 0.2 - 5 * annoyed);
-      ctx.lineTo(w * 0.42, h * 0.27 + 9 * annoyed);
+      ctx.moveTo(w * 0.20, h * 0.12 - 4 * annoyed);
+      ctx.lineTo(w * 0.39, h * 0.19 + 8 * annoyed);
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.moveTo(w * 0.75, h * 0.2 - 5 * annoyed);
-      ctx.lineTo(w * 0.58, h * 0.27 + 9 * annoyed);
+      ctx.moveTo(w * 0.80, h * 0.12 - 4 * annoyed);
+      ctx.lineTo(w * 0.61, h * 0.19 + 8 * annoyed);
       ctx.stroke();
     }
 
@@ -179,18 +179,18 @@ function createVisorExpressionTexture() {
 
   function drawMouth({ w, h, annoyed, dizzy, poke, sleepy, phase }) {
     const mx = w * 0.5;
-    const my = h * 0.62;
-    const mouthW = w * 0.14;
+    const my = h * 0.57;
+    const mouthW = w * 0.22;
 
     ctx.save();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
     if (dizzy > 0.05) {
-      ctx.globalAlpha = Math.min(1, dizzy * 1.2);
+      ctx.globalAlpha = Math.min(1, dizzy * 1.25);
       ctx.strokeStyle = '#ff6b6b';
-      ctx.lineWidth = 5.5;
-      const waveAmp = (4.5 + Math.sin(phase * 1.4) * 2.5) * dizzy;
+      ctx.lineWidth = 8;
+      const waveAmp = (6.5 + Math.sin(phase * 1.4) * 3) * dizzy;
       const waves = 4;
       const steps = 24;
 
@@ -212,15 +212,15 @@ function createVisorExpressionTexture() {
     }
 
     if (annoyed > 0.08) {
-      const g = Math.min(1, annoyed * 1.15);
+      const g = Math.min(1, annoyed * 1.2);
       ctx.globalAlpha = g;
       ctx.strokeStyle = '#ff8787';
-      ctx.lineWidth = 5.5;
-      const drop = 7 * g;
+      ctx.lineWidth = 8;
+      const drop = 9 * g;
 
       ctx.beginPath();
       ctx.moveTo(mx - mouthW * 0.42, my + drop * 0.5);
-      ctx.quadraticCurveTo(mx, my - 2.5 * g, mx + mouthW * 0.42, my + drop * 0.5);
+      ctx.quadraticCurveTo(mx, my - 3.5 * g, mx + mouthW * 0.42, my + drop * 0.5);
       ctx.stroke();
       ctx.restore();
       return;
@@ -228,35 +228,36 @@ function createVisorExpressionTexture() {
 
     if (sleepy > 0.15) {
       const s = Math.min(1, sleepy);
-      ctx.globalAlpha = 0.75 * s;
+      ctx.globalAlpha = 0.85 * s;
       ctx.strokeStyle = '#74c0fc';
-      ctx.lineWidth = 4.8;
+      ctx.lineWidth = 6.5;
       ctx.beginPath();
-      ctx.moveTo(mx - mouthW * 0.32, my);
-      ctx.quadraticCurveTo(mx, my + 2.5 * s, mx + mouthW * 0.32, my);
+      ctx.moveTo(mx - mouthW * 0.34, my);
+      ctx.quadraticCurveTo(mx, my + 3.5 * s, mx + mouthW * 0.34, my);
       ctx.stroke();
       ctx.restore();
       return;
     }
 
-    const bounce = poke > 0.05 ? Math.sin(phase * 1.2) * 2.5 * poke : 0;
+    const bounce = poke > 0.05 ? Math.sin(phase * 1.2) * 3.5 * poke : 0;
     ctx.strokeStyle = '#63e6be';
-    ctx.lineWidth = 5.5;
-    ctx.globalAlpha = 0.9;
+    ctx.lineWidth = 8;
+    ctx.globalAlpha = 0.98;
     ctx.beginPath();
     ctx.moveTo(mx - mouthW * 0.42, my - 2 - bounce * 0.4);
-    ctx.quadraticCurveTo(mx, my + 6.5 + poke * 3.5 + bounce, mx + mouthW * 0.42, my - 2 - bounce * 0.4);
+    ctx.quadraticCurveTo(mx, my + 10.5 + poke * 4 + bounce, mx + mouthW * 0.42, my - 2 - bounce * 0.4);
     ctx.stroke();
     ctx.restore();
   }
 
-  function getTargetCaption({ annoyed, dizzy, poke, sleepy, tracking }) {
+  function getTargetCaption({ annoyed, dizzy, poke, sleepy, tracking, splashActive }) {
     if (dizzy > 0.12) return 'WOOAAH... REBOUNDING!';
     if (poke > 0.12) return 'BOOP! SERVOS READY';
     if (annoyed > 0.14) return 'HEY! EASY ON THE SHELL';
-    if (sleepy > 0.25) return 'ZZZ... LOW POWER MODE';
+    if (splashActive) return 'HELLO HUMAN :)';
+    if (sleepy > 0.25) return 'LOW BATTERY // ZZZ';
     if (tracking) return 'HELLO HUMAN :)';
-    return 'BOOT OK // WAITING';
+    return 'LOW BATTERY // ZZZ';
   }
 
   function drawTypewriterCaption({ w, h, caption, charCount, blinkOn, annoyed, dizzy, sleepy }) {
@@ -269,16 +270,32 @@ function createVisorExpressionTexture() {
     else if (sleepy > 0.25) textColor = '#74c0fc';
 
     ctx.save();
-    ctx.font = 'bold 20px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
+    ctx.font = 'bold 25px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textColor;
-    ctx.fillText(`${visibleText}${cursorChar}`, w * 0.5, h * 0.84);
+    ctx.fillText(`${visibleText}${cursorChar}`, w * 0.5, h * 0.85);
     ctx.restore();
   }
 
-  function renderVisor({ annoyed, dizzy, poke, sleepy = 0, tracking = false, time, dt = 0.016 }) {
-    const candidateCaption = getTargetCaption({ annoyed, dizzy, poke, sleepy, tracking });
+  function renderVisor({
+    annoyed,
+    dizzy,
+    poke,
+    sleepy = 0,
+    tracking = false,
+    splashActive = false,
+    time,
+    dt = 0.016,
+  }) {
+    const candidateCaption = getTargetCaption({
+      annoyed,
+      dizzy,
+      poke,
+      sleepy,
+      tracking,
+      splashActive,
+    });
 
     if (!activeCaption) {
       activeCaption = candidateCaption;
@@ -321,20 +338,20 @@ function createVisorExpressionTexture() {
     const w = canvas.width;
     const h = canvas.height;
 
-    ctx.fillStyle = '#141824';
+    ctx.fillStyle = '#0b0e17';
     ctx.fillRect(0, 0, w, h);
 
-    ctx.strokeStyle = 'rgba(130, 177, 255, 0.16)';
+    ctx.strokeStyle = 'rgba(220, 45, 38, 0.35)';
     ctx.lineWidth = 6;
     ctx.strokeRect(8, 8, w - 16, h - 16);
 
-    const blushAlpha = Math.min(0.65, 0.2 + qPoke * 0.4 + qDizzy * 0.25 + qSleepy * 0.15);
+    const blushAlpha = Math.min(0.55, 0.16 + qPoke * 0.3 + qDizzy * 0.2 + qSleepy * 0.12);
     ctx.save();
     ctx.globalAlpha = blushAlpha;
     ctx.fillStyle = '#ff7875';
     ctx.beginPath();
-    ctx.ellipse(w * 0.22, h * 0.55, w * 0.06, h * 0.06, 0, 0, Math.PI * 2);
-    ctx.ellipse(w * 0.78, h * 0.55, w * 0.06, h * 0.06, 0, 0, Math.PI * 2);
+    ctx.ellipse(w * 0.12, h * 0.47, w * 0.05, h * 0.05, 0, 0, Math.PI * 2);
+    ctx.ellipse(w * 0.88, h * 0.47, w * 0.05, h * 0.05, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
@@ -398,8 +415,14 @@ function buildRetroBodyGeometry() {
   return geo;
 }
 
-const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
+const RobotMascot = ({
+  positionX = 0,
+  splashActive = false,
+  className = 'w-full h-full',
+}) => {
   const containerRef = useRef(null);
+  const splashRef = useRef(splashActive);
+  splashRef.current = splashActive;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -413,7 +436,7 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
     const { w: initW, h: initH } = getSize();
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(36, initW / initH, 0.1, 100);
-    camera.position.set(0, 0.06, 2.35);
+    camera.position.set(0, 0.05, 2.02);
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(initW, initH);
@@ -554,12 +577,12 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
              float ndotv = clamp(dot(N, V), 0.0, 1.0);
 
              float rim = pow(1.0 - ndotv, 2.8);
-             gl_FragColor.rgb += vec3(1.0, 0.85, 0.68) * rim * 0.22;
+             gl_FragColor.rgb += vec3(1.0, 0.55, 0.5) * rim * 0.2;
 
              float wrap = clamp((dot(N, normalize(vec3(0.3, 0.45, 0.85))) + 0.65) / 1.65, 0.0, 1.0);
              float sss = pow(1.0 - ndotv, 1.8) * (0.45 + 0.55 * wrap);
              float sssTotal = uSssBase + uStretchBoost * 0.14;
-             gl_FragColor.rgb += vec3(1.0, 0.68, 0.45) * sss * sssTotal;`
+             gl_FragColor.rgb += vec3(0.86, 0.18, 0.15) * sss * sssTotal;`
           );
       };
 
@@ -567,14 +590,13 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
     }
 
     const robotGroup = new THREE.Group();
-    robotGroup.position.x = positionX;
+    robotGroup.position.set(positionX, 0, 0);
     scene.add(robotGroup);
 
     const bodyGeo = buildRetroBodyGeometry();
-    const baseBodyPos = new Float32Array(bodyGeo.getAttribute('position').array);
     const shellMat = createToyShellMaterial({
-      name: 'ToyBrushedSteel',
-      color: 0xe6ecf5,
+      name: 'SagmeticBrushedSteel',
+      color: 0xd9dee6,
       roughness: 1.0,
       metalness: 0.82,
       roughnessMap: metalBrushTex,
@@ -585,26 +607,26 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
     const bodyMesh = new THREE.Mesh(bodyGeo, shellMat);
     robotGroup.add(bodyMesh);
 
-    const visorGeo = new THREE.PlaneGeometry(0.56, 0.28);
+    const visorGeo = new THREE.PlaneGeometry(0.62, 0.31);
     const visorMat = new THREE.MeshBasicMaterial({
       map: visorSheet.texture,
       toneMapped: false,
     });
     const visorMesh = new THREE.Mesh(visorGeo, visorMat);
-    visorMesh.position.set(0, 0.03, 0.295);
+    visorMesh.position.set(0, 0.03, 0.322);
     robotGroup.add(visorMesh);
 
     const capGeo = new THREE.CylinderGeometry(0.11, 0.11, 0.08, 20);
     capGeo.rotateZ(Math.PI / 2);
     const capMat = createToyShellMaterial({
-      name: 'ToyAnodizedCoral',
-      color: 0xff7b66,
+      name: 'SagmeticCrimsonCap',
+      color: 0xdc2d26,
       roughness: 1.0,
       metalness: 0.72,
       roughnessMap: metalBrushTex,
       bumpMap: metalBrushTex,
       bumpScale: 0.003,
-      sssBase: 0.05,
+      sssBase: 0.06,
     });
     const capL = new THREE.Mesh(capGeo, capMat);
     capL.position.set(-0.39, 0.02, 0);
@@ -620,7 +642,7 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
 
     const stalkGeo = new THREE.CylinderGeometry(0.018, 0.024, 0.22, 12);
     const stalkMat = createToyShellMaterial({
-      name: 'ToyMetalStalk',
+      name: 'SagmeticMetalStalk',
       color: 0xcbd5e1,
       roughness: 0.28,
       sssBase: 0.05,
@@ -631,21 +653,21 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
 
     const bulbGeo = new THREE.SphereGeometry(0.052, 16, 16);
     const bulbMat = new THREE.MeshStandardMaterial({
-      color: 0xff9f43,
-      emissive: 0xff7b29,
-      emissiveIntensity: 0.55,
+      color: 0xdc2d26,
+      emissive: 0xdc2d26,
+      emissiveIntensity: 0.65,
       roughness: 0.25,
     });
     const bulbMesh = new THREE.Mesh(bulbGeo, bulbMat);
     bulbMesh.position.set(0, 0.23, 0);
     antennaPivot.add(bulbMesh);
 
-    const antennaLight = new THREE.PointLight(0xff7b29, 0.45, 2.2, 2);
+    const antennaLight = new THREE.PointLight(0xdc2d26, 0.5, 2.2, 2);
     antennaLight.position.set(0, 0.04, 0.06);
     bulbMesh.add(antennaLight);
 
-    const baseBulbColor = new THREE.Color(0xff9f43);
-    const baseBulbEmissive = new THREE.Color(0xff7b29);
+    const baseBulbColor = new THREE.Color(0xdc2d26);
+    const baseBulbEmissive = new THREE.Color(0xdc2d26);
     const annoyedBulbColor = new THREE.Color(0xff6b6b);
     const annoyedBulbEmissive = new THREE.Color(0xe03131);
     const dizzyBulbColorA = new THREE.Color(0xffd43b);
@@ -663,31 +685,15 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
     const pointerNdc = new THREE.Vector2();
 
     const mouse = { x: 0, y: 0 };
-    const smoothMouse = { x: 0, y: 0 };
+    const look = { x: 0, y: 0 };
 
-    let grab = null;
-    let dragPeakStretch = 0;
     let funnyTimer = 0;
-    let funnyDir = 1;
     let pokeTimer = 0;
     let rippleAmp = 0;
     let annoyedAmount = 0;
     let sleepyAmount = 0;
     let isHoveringRobot = false;
     let timeSinceMove = CURSOR_IDLE_DELAY;
-
-    const spring = {
-      stretchY: 0,
-      stretchYV: 0,
-      pullX: 0,
-      pullXV: 0,
-      pullY: 0,
-      pullYV: 0,
-      tiltZ: 0,
-      tiltZV: 0,
-      antTiltZ: 0,
-      antTiltZV: 0,
-    };
 
     function updateHover(clientX, clientY) {
       const rect = renderer.domElement.getBoundingClientRect();
@@ -704,57 +710,27 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
       }
     }
 
-    function triggerFunnyRebound(dir = 1) {
-      if (funnyTimer > 0.15) return;
-      funnyTimer = DIZZY_DURATION;
-      funnyDir = dir >= 0 ? 1 : -1;
-      spring.stretchYV += 4.2;
-      spring.antTiltZV += (dir >= 0 ? 1 : -1) * 9.5;
-    }
-
-    function triggerPoke() {
-      pokeTimer = 0.35;
-      spring.stretchYV -= 3.0;
-      spring.tiltZV += (Math.random() > 0.5 ? 1 : -1) * 2.0;
-      spring.antTiltZV += (Math.random() > 0.5 ? 1 : -1) * 6.0;
-    }
-
     const onMouseMove = (e) => {
-      const rect = renderer.domElement.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      if (window.innerWidth > 0 && window.innerHeight > 0) {
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -((e.clientY / window.innerHeight) * 2 - 1);
       }
       timeSinceMove = 0;
       updateHover(e.clientX, e.clientY);
-      if (isHoveringRobot && !grab) {
-        rippleAmp = Math.min(1.0, rippleAmp + 0.24);
+      if (isHoveringRobot) {
+        rippleAmp = Math.min(1.0, rippleAmp + 0.2);
       }
     };
 
-    const onPointerDown = (e) => {
-      if (e.button !== undefined && e.button !== 0) return;
+    const onClick = (e) => {
       updateHover(e.clientX, e.clientY);
       if (!isHoveringRobot) return;
-      const rect = renderer.domElement.getBoundingClientRect();
-      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      const ny = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-      grab = { startX: nx, startY: ny, pullX: 0, pullY: 0 };
-      dragPeakStretch = 0;
       timeSinceMove = 0;
-    };
-
-    const onPointerUp = () => {
-      if (!grab) return;
-      const pullMag = Math.hypot(grab.pullX, grab.pullY);
-      const dir = grab.pullX || mouse.x;
-      grab = null;
-      if (Math.max(dragPeakStretch, pullMag) > 0.12) {
-        triggerFunnyRebound(dir);
-      } else if (pullMag <= 0.03) {
-        triggerPoke();
+      if (pokeTimer > 0.05) {
+        funnyTimer = DIZZY_DURATION;
+      } else {
+        pokeTimer = 0.35;
       }
-      dragPeakStretch = 0;
     };
 
     const onResize = () => {
@@ -766,8 +742,7 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
     };
 
     window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('click', onClick);
     window.addEventListener('resize', onResize);
 
     const clock = new THREE.Clock();
@@ -779,25 +754,13 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
       const now = clock.getElapsedTime();
 
       timeSinceMove += dt;
+      const isSplash = splashRef.current;
       const isTracking = timeSinceMove < CURSOR_IDLE_DELAY;
 
-      smoothMouse.x = THREE.MathUtils.damp(smoothMouse.x, mouse.x, 12, dt);
-      smoothMouse.y = THREE.MathUtils.damp(smoothMouse.y, mouse.y, 12, dt);
-
-      if (grab) {
-        const nx = (mouse.x + 1) * 0.5;
-        const ny = (-mouse.y + 1) * 0.5;
-        const sx = (grab.startX + 1) * 0.5;
-        const sy = (-grab.startY + 1) * 0.5;
-        const dx = nx - sx;
-        const dy = ny - sy;
-        const len = Math.hypot(dx, dy);
-        const maxPull = 0.42;
-        const eased = len > 0 ? (maxPull * Math.tanh(len / maxPull)) / len : 0;
-        grab.pullX = dx * eased;
-        grab.pullY = dy * eased;
-        dragPeakStretch = Math.max(dragPeakStretch, Math.hypot(grab.pullX, grab.pullY));
-      }
+      const targetLookX = isTracking ? mouse.x : 0;
+      const targetLookY = isTracking ? mouse.y : 0;
+      look.x = THREE.MathUtils.damp(look.x, targetLookX, 9.5, dt);
+      look.y = THREE.MathUtils.damp(look.y, targetLookY, 9.5, dt);
 
       let funnyWave = 0;
       if (funnyTimer > 0) {
@@ -810,11 +773,11 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
       }
       const pokeWave = pokeTimer > 0 ? Math.sin((pokeTimer / 0.35) * Math.PI) : 0;
 
-      rippleAmp = THREE.MathUtils.damp(rippleAmp, 0, 1.1, dt);
-      const activeHoverFlag = isHoveringRobot && !grab ? 1.0 : 0.0;
+      rippleAmp = THREE.MathUtils.damp(rippleAmp, 0, 1.2, dt);
+      const activeHoverFlag = isHoveringRobot ? 1.0 : 0.0;
 
       if (activeHoverFlag > 0 && rippleAmp > 0.14 && funnyWave <= 0.05) {
-        annoyedHoldTimer = Math.max(annoyedHoldTimer, 1.6);
+        annoyedHoldTimer = Math.max(annoyedHoldTimer, 1.5);
       } else if (annoyedHoldTimer > 0) {
         annoyedHoldTimer = Math.max(0, annoyedHoldTimer - dt);
       }
@@ -822,16 +785,15 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
       const holdFactor = Math.min(1, annoyedHoldTimer / 0.6);
       const rippleFactor =
         activeHoverFlag > 0 && funnyWave <= 0.05
-          ? Math.min(1, rippleAmp * 1.45)
+          ? Math.min(1, rippleAmp * 1.4)
           : 0;
-
       const targetAnnoyed =
         funnyWave > 0.05 ? 0 : Math.max(rippleFactor, holdFactor * 0.85);
 
       annoyedAmount = THREE.MathUtils.damp(annoyedAmount, targetAnnoyed, 3.2, dt);
 
       const targetSleepy =
-        !isTracking && funnyWave <= 0.05 && annoyedAmount <= 0.05 ? 1.0 : 0.0;
+        !isSplash && !isTracking && funnyWave <= 0.05 && annoyedAmount <= 0.05 ? 1.0 : 0.0;
       sleepyAmount = THREE.MathUtils.damp(sleepyAmount, targetSleepy, 4.5, dt);
 
       visorSheet.renderVisor({
@@ -840,13 +802,14 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
         poke: pokeWave,
         sleepy: sleepyAmount,
         tracking: isTracking,
+        splashActive: isSplash,
         time: now,
         dt,
       });
 
       targetBulbColor.copy(baseBulbColor);
       targetBulbEmissive.copy(baseBulbEmissive);
-      let targetIntensity = 0.55;
+      let targetIntensity = 0.65;
 
       if (sleepyAmount > 0.05) {
         const breath = 0.5 + 0.5 * Math.sin(now * 2.2);
@@ -854,7 +817,7 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
         targetBulbEmissive.lerp(sleepyBulbEmissive, sleepyAmount);
         targetIntensity = THREE.MathUtils.lerp(
           targetIntensity,
-          0.22 + breath * 0.16,
+          0.25 + breath * 0.16,
           sleepyAmount
         );
       }
@@ -865,7 +828,7 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
         targetBulbEmissive.lerp(annoyedBulbEmissive, annoyedAmount);
         targetIntensity = THREE.MathUtils.lerp(
           targetIntensity,
-          0.85 + pulse * 0.3,
+          0.9 + pulse * 0.3,
           annoyedAmount
         );
       }
@@ -900,72 +863,21 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
       antennaLight.color.copy(bulbMat.emissive);
       antennaLight.intensity = bulbMat.emissiveIntensity * 0.65;
 
-      const targetPullX = grab ? grab.pullX * 0.72 : (isTracking ? smoothMouse.x * 0.06 : 0);
-      const targetPullY = grab ? -grab.pullY * 0.72 : Math.sin(now * 2.2) * 0.012 * sleepyAmount;
-      const pullMag = Math.hypot(targetPullX, targetPullY);
-      const targetStretchY =
-        grab
-          ? pullMag * 0.75
-          : funnyWave * 0.2 - pokeWave * 0.18 + Math.sin(now * 2.2) * 0.025 * sleepyAmount;
-      const targetTiltZ =
-        (grab ? -grab.pullX * 0.55 : isTracking ? -smoothMouse.x * 0.12 : 0) +
-        funnyWave * 0.2 * funnyDir;
-
-      const k = 115;
-      const damp = 14;
-      spring.pullXV += (k * (targetPullX - spring.pullX) - damp * spring.pullXV) * dt;
-      spring.pullX += spring.pullXV * dt;
-      spring.pullYV += (k * (targetPullY - spring.pullY) - damp * spring.pullYV) * dt;
-      spring.pullY += spring.pullYV * dt;
-      spring.stretchYV += (k * (targetStretchY - spring.stretchY) - damp * spring.stretchYV) * dt;
-      spring.stretchY += spring.stretchYV * dt;
-      spring.tiltZV += (k * (targetTiltZ - spring.tiltZ) - damp * spring.tiltZV) * dt;
-      spring.tiltZ += spring.tiltZV * dt;
-
-      const antTarget = -spring.tiltZ * 1.4 - spring.pullX * 1.1;
-      const antK = 90;
-      const antDamp = 8.5;
-      spring.antTiltZV += (antK * (antTarget - spring.antTiltZ) - antDamp * spring.antTiltZV) * dt;
-      spring.antTiltZ += spring.antTiltZV * dt;
-      antennaPivot.rotation.z = spring.antTiltZ;
-      antennaPivot.rotation.x = isTracking ? -smoothMouse.y * 0.15 : 0.12 * sleepyAmount;
-
-      const scaleY = THREE.MathUtils.clamp(1.0 + spring.stretchY, 0.72, 1.38);
-      const scaleXZ = 1.0 / Math.sqrt(scaleY);
-
-      robotGroup.position.set(positionX + spring.pullX, spring.pullY, 0);
+      robotGroup.scale.set(1, 1, 1);
+      robotGroup.position.set(positionX, 0, 0);
       robotGroup.rotation.set(
-        isTracking ? -smoothMouse.y * 0.18 : 0.06 * sleepyAmount,
-        isTracking ? smoothMouse.x * 0.24 : 0,
-        spring.tiltZ
+        -look.y * 0.14 + 0.05 * sleepyAmount,
+        look.x * 0.28,
+        0
       );
-      robotGroup.scale.set(scaleXZ, scaleY, scaleXZ);
 
-      const posAttr = bodyGeo.getAttribute('position');
-      const arr = posAttr.array;
-      const pullWorldX = grab ? grab.pullX * 0.45 : 0;
-      const pullWorldY = grab ? -grab.pullY * 0.45 : 0;
-
-      for (let i = 0; i < arr.length; i += 3) {
-        const bx = baseBodyPos[i];
-        const by = baseBodyPos[i + 1];
-        const bz = baseBodyPos[i + 2];
-
-        const frontBias = THREE.MathUtils.clamp((bz + 0.2) / 0.55, 0, 1);
-        const w = frontBias * frontBias;
-
-        arr[i] = bx + pullWorldX * w;
-        arr[i + 1] = by + pullWorldY * w;
-        arr[i + 2] = bz + Math.hypot(pullWorldX, pullWorldY) * 0.14 * w;
-      }
-      posAttr.needsUpdate = true;
-      bodyGeo.computeVertexNormals();
+      antennaPivot.rotation.z = -look.x * 0.18;
+      antennaPivot.rotation.x = -look.y * 0.12 + 0.1 * sleepyAmount;
 
       shaderUniforms.uTime.value = now;
       shaderUniforms.uHoverActive.value = activeHoverFlag;
       shaderUniforms.uRippleAmp.value = rippleAmp;
-      shaderUniforms.uStretchBoost.value = Math.min(1, Math.abs(spring.stretchY) * 2.0);
-
+      shaderUniforms.uStretchBoost.value = 0;
       renderer.render(scene, camera);
     }
 
@@ -974,8 +886,7 @@ const RobotMascot = ({ positionX = 0, className = 'w-full h-screen' }) => {
     return () => {
       cancelAnimationFrame(animFrameId);
       window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('pointerup', onPointerUp);
+      window.removeEventListener('click', onClick);
       window.removeEventListener('resize', onResize);
       visorSheet.texture.dispose();
       bodyGeo.dispose();
